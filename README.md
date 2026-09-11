@@ -2,7 +2,30 @@
 
 A Streamlit quiz to practise type effectiveness across all 18 Pokémon types.
 
-This is the **offline / local version**: the app runs on your computer and is accessed through your browser. No account, external service, or online database is required. An internet connection is needed to install dependencies; once installed, the quiz and icons work locally.
+This is the **online version**, developed on the `feature/online` branch, with a shared Supabase leaderboard. Players choose a name or use a random trainer name without creating an account.
+
+**Play online on Streamlit Community Cloud:** [link to be added after deployment].
+
+## Online and offline versions
+
+- **`feature/online`**: online version with result storage in Supabase and a shared top-20 leaderboard. Once deployed, you can play directly in your browser without installing anything.
+- **`main`**: offline / local version, with no Supabase configuration or shared leaderboard. An internet connection is needed to install dependencies; the quiz then runs locally.
+
+To use the offline version, run these commands from your local clone with your Python environment activated:
+
+```bash
+git checkout main
+python -m pip install -r requirements.txt
+python -m streamlit run app/app.py
+```
+
+Follow the README on `main` for the full offline setup. To return to the online branch:
+
+```bash
+git checkout feature/online
+```
+
+The instructions below describe running and configuring the **online version** locally.
 
 ## How it works
 
@@ -22,9 +45,9 @@ The quiz covers single-type effectiveness only: dual types, STAB, abilities, hel
 
 `random` and `time` are included in Python's standard library and do not require separate installation.
 
-## Installation and startup
+## Run the online version locally
 
-Download or clone the project, then open a terminal in the `pokemon` project root: the directory containing `requirements.txt`, `app`, `assets`, `data`, and `src`.
+Clone the project, select `feature/online` with `git checkout feature/online`, then open a terminal in the `pokemon` project root: the directory containing `requirements.txt`, `app`, `assets`, `data`, and `src`. Configure Supabase using the instructions below to enable saving results and loading the shared leaderboard.
 
 ### macOS / Linux
 
@@ -63,17 +86,47 @@ Streamlit prints the local address in the terminal, usually [http://localhost:85
 
 ## Result storage
 
-In this version, results are stored only in the Streamlit session (`st.session_state`). They are not saved to disk or a database, and there is no shared leaderboard. Refreshing the browser or starting a new session may reset them; **Play again** clears the previous session's history.
+Completed games are saved to Supabase. Opening the leaderboard fetches the best 20 results by score, time, creation date, and ID. Names can repeat: each row represents a game. A stable UUID prevents duplicate submissions when retrying a request whose response was lost.
+
+### Supabase setup
+
+1. Create `public.results` with the schema below if it does not already exist. If you already created it, skip this step.
+
+```sql
+CREATE TABLE public.results (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name text NOT NULL CHECK (char_length(trim(name)) BETWEEN 1 AND 40),
+    correct_answers integer NOT NULL CHECK (correct_answers BETWEEN 0 AND 20),
+    elapsed_seconds double precision NOT NULL
+        CHECK (elapsed_seconds >= 0 AND elapsed_seconds < 'Infinity'::double precision),
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+```
+
+2. Run `sql/results_access.sql` in Supabase SQL Editor. `GRANT` permits reading and inserting into this table; RLS policies permit those operations on its rows. No update or delete permission is granted. The index supports leaderboard ordering.
+3. Copy `.streamlit/secrets.example.toml` to `.streamlit/secrets.toml` and fill in your project URL and publishable key from Supabase. The real secrets file is ignored by Git. Do not use a service-role or secret key: this setup uses the restricted `anon` role.
+4. Install `requirements.txt` and restart Streamlit. On Streamlit Community Cloud, enter the same TOML values in the app's Secrets settings and use `app/app.py` as the entry point.
+5. Complete a game, check the row in Supabase Table Editor, and open Leaderboard. Open another browser session to verify the shared ranking.
+
+These policies allow anonymous reading and insertion of results. Anyone with the project URL and publishable key can submit results directly; this is a casual leaderboard, not an anti-cheat system. The key stays in Streamlit's server-side secrets.
+
+If configuration or networking fails, the quiz remains playable and shows a save warning. Use **Retry saving** before starting another game; unsaved results are not durable across a new game or browser session. A failed leaderboard query displays an error rather than an empty ranking.
+
+Database calls live in `src/database.py`: `insert` sends a result; `select`, `order`, and `limit` implement the top-20 query. Credentials and the client stay on the Streamlit server. Query results are not cached.
+
 
 ## Project structure
 
 ```text
 pokemon/
 ├── .streamlit/config.toml   # Native theme: colors and fonts
+├── .streamlit/secrets.example.toml # Example Supabase configuration
 ├── app/app.py              # Interface, session state, scoring, and timer
 ├── assets/icons/           # All 18 SVG icons and their license
 ├── data/types.py           # Type index → name mapping
 ├── data/type_chart.py      # Matrix: attacking row, defending column
+├── sql/results_access.sql # Database permissions, RLS policies, and index
+├── src/database.py        # Supabase result saving and leaderboard queries
 ├── src/functions.py        # Random type selection and correct answer
 ├── requirements.txt
 └── README.md
