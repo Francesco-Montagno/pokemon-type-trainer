@@ -1,0 +1,13 @@
+[theme]
+base = "dark"
+primaryColor = "#E6BC62"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#304E66"
+textColor = "#F2EFE6"
+yellowColor = "#E6BC62"
+linkColor = "#E6BC62"
+borderColor = "#526E83"
+font = "sans-serif"
+headingFont = "serif"
+baseRadius = "large"
+buttonRadius = "medium"
