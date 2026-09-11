@@ -1,6 +1,13 @@
 from time import perf_counter
 from random import choice
 from uuid import uuid4
+from pathlib import Path
+import sys
+
+# Resolve local modules from this file, independent of the launch directory.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import streamlit as st
 
@@ -217,13 +224,13 @@ with st.container(border=True):
     col1, col2, col3 = st.columns(3, vertical_alignment="center")
     with col1:
         st.caption("ATTACKING TYPE")
-        st.image(f"assets/icons/{TYPES[type_1].lower()}.svg", width=90)
+        st.image(str(PROJECT_ROOT / "assets" / "icons" / f"{TYPES[type_1].lower()}.svg"), width=90)
         st.subheader(TYPES[type_1])
     with col2:
         st.markdown("### ⚔️ :red[**ATTACKS**]")
     with col3:
         st.caption("DEFENDING TYPE")
-        st.image(f"assets/icons/{TYPES[type_2].lower()}.svg", width=90)
+        st.image(str(PROJECT_ROOT / "assets" / "icons" / f"{TYPES[type_2].lower()}.svg"), width=90)
         st.subheader(TYPES[type_2])
 
     st.divider()

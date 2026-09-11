@@ -82,7 +82,7 @@ You do not need to create a `.venv` environment as well if you use Conda.
 
 Streamlit prints the local address in the terminal, usually [http://localhost:8501](http://localhost:8501). Open it in your browser. To stop the server, press **Ctrl+C** in the terminal.
 
-**Always run the command from the project root:** imports and relative icon paths depend on this location. Do not launch the app with `python app/app.py`.
+Run the commands above from the project root. Local modules and icons are resolved relative to the app file, including on Streamlit Community Cloud. Do not launch the app with `python app/app.py`.
 
 ## Result storage
 
