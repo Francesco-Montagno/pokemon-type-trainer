@@ -4,7 +4,7 @@ A Streamlit quiz to practise type effectiveness across all 18 Pokémon types.
 
 This is the **online version**, developed on the `feature/online` branch, with a shared Supabase leaderboard. Players choose a name or use a random trainer name without creating an account.
 
-**Play online on Streamlit Community Cloud:** [link to be added after deployment].
+**Play online on Streamlit Community Cloud:** [Pokémon Type Trainer](https://pokemon-type-trainer.streamlit.app).
 
 ## Online and offline versions
 
