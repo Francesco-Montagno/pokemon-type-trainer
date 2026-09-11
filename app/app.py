@@ -25,6 +25,8 @@ RANDOM_NAMES = (
 
 st.set_page_config(page_title="Pokémon Type Trainer", page_icon="⚔️", layout="centered")
 
+st.html(f"<style>{(PROJECT_ROOT / 'assets' / 'mobile.css').read_text()}</style>")
+
 st.caption("POKÉMON TRAINING • TYPE MATCHUPS")
 st.title(":yellow[Master the matchup.]")
 st.write("20 questions. Pick the damage multiplier and sharpen your type knowledge.")
@@ -213,7 +215,7 @@ def show_timer():
     st.metric("Time", f"{minutes:02d}:{seconds:02d}")
 
 
-with st.container(border=True):
+with st.container(border=True, key="quiz"):
     heading_col, score_col, timer_col = st.columns([2, 1, 1])
     heading_col.subheader(f"Question {st.session_state.answered_count + 1:02d}")
     score_col.metric("Score", st.session_state.score)

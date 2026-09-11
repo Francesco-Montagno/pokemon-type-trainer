@@ -1,0 +1,44 @@
+/* Only phones: preserve Streamlit's existing desktop layout. */
+@media (max-width: 640px) {
+  [data-testid="stMainBlockContainer"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .st-key-quiz [data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+  }
+  .st-key-quiz [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+    width: auto !important;
+  }
+  .st-key-quiz h3 {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+  .st-key-quiz [data-testid="stCaptionContainer"] p {
+    font-size: 0.65rem;
+    overflow-wrap: anywhere;
+  }
+  .st-key-quiz [data-testid="stMetricValue"] {
+    font-size: 1.35rem;
+  }
+  .st-key-quiz [data-testid="stImage"] img {
+    max-width: 100%;
+    width: 64px;
+    height: auto;
+  }
+  /* Keep every answer comfortably tappable, arranged in two rows. */
+  .st-key-quiz [data-testid="stHorizontalBlock"]:has([data-testid="stButton"]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .st-key-quiz [data-testid="stButton"],
+  .st-key-quiz [data-testid="stButton"] button {
+    width: 100% !important;
+  }
+  .st-key-quiz [data-testid="stButton"] button {
+    min-height: 48px;
+  }
+}
