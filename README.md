@@ -4,6 +4,8 @@ A Streamlit quiz to practise type effectiveness across all 18 Pokémon types.
 
 This is the **offline / local version**: the app runs on your computer and is accessed through your browser. No account, external service, or online database is required. An internet connection is needed to install dependencies; once installed, the quiz and icons work locally.
 
+Prefer to play online without installing anything? Open [Pokémon Type Trainer](https://pokemon-type-trainer.streamlit.app), with a shared leaderboard and no registration required. The online version is developed on the `feature/online` branch.
+
 ## How it works
 
 - Each session contains 20 random questions: the first type attacks the second.
